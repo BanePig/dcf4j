@@ -45,3 +45,9 @@ public void handleEatCommand(IMessage message, IUser user) {
 ```
 
 This command will be activated if a user types "!eat @BanePig", however if the user types "!eat @59fja5jga", and 59fja5jga is not a user, it will fail to invoke the command.
+Other types which can be used are:
+* IUser
+* IChannel
+* Double
+* Long
+* String
