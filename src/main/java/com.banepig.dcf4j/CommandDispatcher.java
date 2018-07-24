@@ -1,23 +1,24 @@
 package com.banepig.dcf4j;
 
-import org.jetbrains.annotations.NotNull;
+import com.banepig.dcf4j.stringcaster.CastType;
+import com.banepig.dcf4j.stringcaster.StringCaster;
+import com.sun.xml.internal.txw2.IllegalAnnotationException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommandDispatcher {
     private IDiscordClient client;
     private StringCaster stringCaster;
-    private ArrayList<Object> registeredCommands = new ArrayList<>();
+    private HashMap<String, ArrayList<CommandExecutor>> registeredCommands = new HashMap<>();
 
 
     /**
@@ -38,8 +39,22 @@ public class CommandDispatcher {
      *
      * @param commands The commands to register.
      */
-    public void registerCommands(Object... commands) {
-        registeredCommands.addAll(Arrays.asList(commands));
+    public void registerCommands(Object... commands) throws IllegalArgumentException {
+        for (Object commandClassInstance : commands) {
+            Class commandClass = commandClassInstance.getClass();
+            for (Method commandExecutorMethod : commandClass.getMethods()) {
+                Command annotation = commandExecutorMethod.getAnnotation(Command.class);
+                if (annotation == null) continue;
+                String label = annotation.label();
+                CommandExecutor commandExecutor = new CommandExecutor(commandClassInstance, commandExecutorMethod);
+                registeredCommands.computeIfAbsent(label, k -> new ArrayList<>());
+                ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
+                commandsWithLabel.add(commandExecutor);
+                if (!commandExecutor.isAnnotationsValid())
+                    throw new IllegalAnnotationException("Cannot have an optional parameter after a required parameter!");
+                registeredCommands.put(label.toLowerCase(), commandsWithLabel);
+            }
+        }
     }
 
     /**
@@ -48,7 +63,19 @@ public class CommandDispatcher {
      * @param commands The commands to unregister.
      */
     public void unregisterCommands(Object... commands) {
-        registeredCommands.removeAll(Arrays.asList(commands));
+        for (Object commandClassInstance : commands) {
+            Class commandClass = commandClassInstance.getClass();
+            for (Method commandExecutorMethod : commandClass.getMethods()) {
+                Command annotation = commandExecutorMethod.getAnnotation(Command.class);
+                if (annotation == null) continue;
+                String label = annotation.label();
+                CommandExecutor commandExecutor = new CommandExecutor(commandClassInstance, commandExecutorMethod);
+                registeredCommands.computeIfAbsent(label, k -> new ArrayList<>());
+                ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
+                commandsWithLabel.remove(commandExecutor);
+                registeredCommands.put(label, commandsWithLabel);
+            }
+        }
     }
 
     /**
@@ -62,21 +89,30 @@ public class CommandDispatcher {
 
         String label = args.get(0);
         args = args.subList(1, args.size());
-        ArrayList<Object> castedArgs = new ArrayList<>();
-        castedArgs.add(event.getMessage());
-        for (String arg : args) castedArgs.add(stringCaster.autoCast(arg));
+        dispatchCommand(label, args.toArray(new String[args.size()]), event.getMessage());
+    }
 
-        for (Object command : registeredCommands) {
-            for (Method method : command.getClass().getDeclaredMethods()) {
-                Command annotation = method.getAnnotation(Command.class);
-                if(annotation == null) continue;
-                if(!annotation.name().equals(label)) continue;
-                try {
-                    method.invoke(command, castedArgs.toArray());
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+    /**
+     * @param label The label of the command.
+     * @param args  The command arguments.
+     */
+    private void dispatchCommand(String label, String[] args, IMessage message) {
+        List<CommandExecutor> commandExecutors = registeredCommands.get(label);
+        if (commandExecutors == null) return;
+        invokeLoop:
+        for (CommandExecutor commandExecutor : commandExecutors) {
+            Class<?>[] commandExecutorParams = commandExecutor.getCommandExecutor().getParameterTypes();
+            Object[] castedArgs = new Object[commandExecutorParams.length];
+            castedArgs[0] = message;
+            int index = 1;
+            for (String argument : args) {
+                if (commandExecutorParams.length <= index) continue invokeLoop;
+                CastType goalType = StringCaster.getCastType(commandExecutorParams[index]);
+                castedArgs[index] = stringCaster.autoCast(goalType, argument);
+                index++;
             }
+            for (int i = args.length + 1; i < castedArgs.length - args.length; i++) castedArgs[i] = null;
+            commandExecutor.tryInvoke(castedArgs);
         }
     }
 }
