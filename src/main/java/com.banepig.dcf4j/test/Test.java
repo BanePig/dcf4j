@@ -5,12 +5,12 @@ import com.banepig.dcf4j.CommandDispatcher;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.handle.obj.IUser;
 
 public class Test {
     public static void main(String... args) {
-        IDiscordClient client = createClient("NDU3OTI4MTQ3MTc0OTQ4ODY0.DjZnog.EqETDg0vj_ImnCtW2CNEIrsvZRE", true); // Build Discord4J client.
+        IDiscordClient client = createClient("token", true); // Build Discord4J client, replace "Token" with your discord token.
         if(client == null) return;
         while(!client.isReady() || !client.isLoggedIn()) { // Wait until client is logged in.
             try {
@@ -42,11 +42,11 @@ public class Test {
 
     @Command(name = "!ping", description = "Pongs your ping.", usage = "!ping")
     public void commandHandler(IMessage message) {
-        messsage.getChannel().sendMessage("Pong!");
+        message.getChannel().sendMessage("Pong!");
     }
-	
+
 	@Command(name = "!eat", description = "Eats a user.", usage = "!eat [User]")
     public void commandHandler(IMessage message, IUser user) {
-        messsage.getChannel().sendMessage("Ate " + user.name() + "!");
+        message.getChannel().sendMessage("Ate " + user.getName() + "!");
     }
 }
