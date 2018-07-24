@@ -10,9 +10,9 @@ import sx.blah.discord.util.DiscordException;
 
 public class Test {
     public static void main(String... args) {
-        IDiscordClient client = createClient("NDU3OTI4MTQ3MTc0OTQ4ODY0.DjZnog.EqETDg0vj_ImnCtW2CNEIrsvZRE", true);
+        IDiscordClient client = createClient("NDU3OTI4MTQ3MTc0OTQ4ODY0.DjZnog.EqETDg0vj_ImnCtW2CNEIrsvZRE", true); // Build Discord4J client.
         if(client == null) return;
-        while(!client.isReady() || !client.isLoggedIn()) {
+        while(!client.isReady() || !client.isLoggedIn()) { // Wait until client is logged in.
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -20,10 +20,11 @@ public class Test {
             }
         }
 
-        CommandDispatcher dispatcher = new CommandDispatcher(client);
-        dispatcher.registerCommands(new Test());
+        CommandDispatcher dispatcher = new CommandDispatcher(client); // Create command dispatcher.
+        dispatcher.registerCommands(new Test()); // Register command.
     }
 
+	// From discord4j's repository.
     private static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client
         ClientBuilder clientBuilder = new ClientBuilder(); // Creates the ClientBuilder instance
         clientBuilder.withToken(token); // Adds the login info to the builder
@@ -39,11 +40,13 @@ public class Test {
         }
     }
 
-    @Command(name = "!sick", description = "Eats man", usage = "!sick [Name] [User]")
-    public void commandHandler(IMessage message, String name, IUser poopoo) {
-        System.out.println(message);
-        System.out.println(name);
-        System.out.println(poopoo);
-        message.getChannel().sendMessage("Coolcool");
+    @Command(name = "!ping", description = "Pongs your ping.", usage = "!ping")
+    public void commandHandler(IMessage message) {
+        messsage.getChannel().sendMessage("Pong!");
+    }
+	
+	@Command(name = "!eat", description = "Eats a user.", usage = "!eat [User]")
+    public void commandHandler(IMessage message, IUser user) {
+        messsage.getChannel().sendMessage("Ate " + user.name() + "!");
     }
 }
