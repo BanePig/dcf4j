@@ -2,7 +2,6 @@ package com.banepig.dcf4j;
 
 import com.banepig.dcf4j.stringcaster.CastType;
 import com.banepig.dcf4j.stringcaster.StringCaster;
-import com.sun.xml.internal.txw2.IllegalAnnotationException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -66,7 +65,7 @@ public class CommandDispatcher {
                 ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
                 commandsWithLabel.add(commandExecutor);
                 if (!commandExecutor.isAnnotationsValid()) {
-                    throw new IllegalAnnotationException("Cannot have an optional parameter after a required parameter!");
+                    throw new IllegalAnnotationException();
                 }
                 registeredCommands.put(label.toLowerCase(), commandsWithLabel);
             }

@@ -17,6 +17,4 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "com.discord4j:Discord4J:2.10.1"
-    compile group: 'org.javatuples', name: 'javatuples', version: '1.2'
-    compile group: 'com.sun', name: 'plugin', version: '1.6.0.12'
 }
