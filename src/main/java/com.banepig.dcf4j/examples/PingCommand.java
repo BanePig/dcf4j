@@ -24,7 +24,6 @@ public class PingCommand {
         // May cause 403 forbidden error if client doesn't have permission to send PM.
     }
 
-    //Not called on "!ping" because of @Optional, would be called without it.
     @Command(label = "!bulkDelete", description = "Deletes some messages.", usage = "!bulkDelete (Amount)")
     public void commandHandler(IMessage message, @Optional Long amount) {
         if (amount == null) amount = (long) 5; // If no amount parameter was provided, set to a default of 5.
