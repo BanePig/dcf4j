@@ -37,6 +37,7 @@ public class CommandDispatcher {
      * Initializes a CommandDispatcher object
      *
      * @param client The client this object should use to listen for events.
+     * @param usageMessage The custom invalid usage message which dcf4j will send to users if they use a command incorrectly.
      */
     public CommandDispatcher(IDiscordClient client, String usageMessage) {
         this.client = client;
