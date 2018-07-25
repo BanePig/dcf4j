@@ -1,0 +1,7 @@
+// An example of how to use Optional parameters
+@Command(label="!purge", usage = "!purge [Amount]", description = "Bulk-deletes messages.")
+fun handlePing(message: IMessage, @Optional amount: Int?) {
+  if(amount == null) amount = 5;
+  var history = message.channel.getMessageHistoryFrom(amount);
+  history.bulkDelete();
+}
