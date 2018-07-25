@@ -4,6 +4,9 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 
+/**
+ * Automatically casts strings into various other classes.
+ */
 public class StringCaster {
     /**
      * Returns a CastType enum from a class.

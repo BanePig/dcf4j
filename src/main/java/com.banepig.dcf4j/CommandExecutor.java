@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+/**
+ * A class which makes it easier to invoke commands.
+ */
 class CommandExecutor {
     private Object commandClassInstance;
     private Method commandExecutor;
