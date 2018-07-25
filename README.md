@@ -1,8 +1,6 @@
 # DCF4J [![](https://jitpack.io/v/BanePig/dcf4j.svg)](https://jitpack.io/#BanePig/dcf4j)
 
-NOTE: At DCF4J's current state, it is not recommended you use this framework. I would suggest you use a more mature command framework, such as SDCF4J
-
-A discord command framework for java. I got sick of constantly having to check syntax every time I wanted to make a command that I should be able to make in one line. This framework was made in 1 hour, so it still has lots of work needed. I would be greatful if you could report any issues you find. At the moment, this framework is only available for Discord4J, however JDA and Javacord versions are planned. 
+A java command framework. This framework automatically checks syntax, and has many options for customization to write more with less.
 
 ## Requirements
 
