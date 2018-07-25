@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.51'
 }
 
+apply plugin: 'maven'
+
 group 'com.banepig.dcf4j'
 version '1.0-SNAPSHOT'
 
