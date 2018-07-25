@@ -1,4 +1,4 @@
-# DCF4J
+# DCF4J [![](https://jitpack.io/v/BanePig/dcf4j.svg)](https://jitpack.io/#BanePig/dcf4j)
 
 NOTE: At DCF4J's current state, it is not recommended you use this framework. I would suggest you use a more mature command framework, such as SDCF4J
 
