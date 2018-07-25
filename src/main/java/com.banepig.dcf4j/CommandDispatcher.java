@@ -66,6 +66,7 @@ public class CommandDispatcher {
                 commandsWithLabel.add(commandExecutor);
                 if (!commandExecutor.isAnnotationsValid()) {
                     throw new IllegalAnnotationException();
+
                 }
                 registeredCommands.put(label.toLowerCase(), commandsWithLabel);
             }
@@ -138,5 +139,13 @@ public class CommandDispatcher {
             Command command = commandExecutors.get(0).getAnnotation();
             message.getChannel().sendMessage(usageMessage.replace("%USAGE%", command.usage()));
         }
+    }
+
+    public String getUsageMessage() {
+        return usageMessage;
+    }
+
+    public void setUsageMessage(String usageMessage) {
+        this.usageMessage = usageMessage;
     }
 }
