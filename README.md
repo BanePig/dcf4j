@@ -10,7 +10,7 @@ After installing Discord4J follow the instructions below.
 ## Maven
 
 Add the following to your pom.xml, substituting %version% for your desired version.
-```
+```xml
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -19,7 +19,7 @@ Add the following to your pom.xml, substituting %version% for your desired versi
 </repositories>
 ```
 
-```
+```xml
 <dependency>
   <groupId>com.github.BanePig</groupId>
   <artifactId>dcf4j</artifactId>
@@ -30,7 +30,7 @@ Add the following to your pom.xml, substituting %version% for your desired versi
 ## Gradle
 
 Add the following to your build.gradle, substituting %version% for your desired version.
-```
+```gradle
 allprojects {
   repositories {
     maven { url 'https://jitpack.io' }
@@ -38,7 +38,7 @@ allprojects {
 }
 ```
   
-```
+```gradle
 dependencies {
   implementation 'com.github.BanePig:dcf4j:%version%'
 }
