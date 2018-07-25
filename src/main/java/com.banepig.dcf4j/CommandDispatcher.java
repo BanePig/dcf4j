@@ -65,8 +65,9 @@ public class CommandDispatcher {
                 registeredCommands.computeIfAbsent(label, k -> new ArrayList<>());
                 ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
                 commandsWithLabel.add(commandExecutor);
-                if (!commandExecutor.isAnnotationsValid())
+                if (!commandExecutor.isAnnotationsValid()) {
                     throw new IllegalAnnotationException("Cannot have an optional parameter after a required parameter!");
+                }
                 registeredCommands.put(label.toLowerCase(), commandsWithLabel);
             }
         }
