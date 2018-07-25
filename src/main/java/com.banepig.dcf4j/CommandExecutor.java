@@ -36,41 +36,45 @@ class CommandExecutor {
 
     /**
      * Invokes the commandExecutor.
-     *
      * @param args The arguments to call the method with.
-     * @return The methods return.
+     * @return True, if the command was used correctly, else false.
      */
-    Object invoke(Object... args) throws InvocationTargetException, IllegalAccessException {
-        return commandExecutor.invoke(commandClassInstance, args);
+    boolean invoke(Object... args) throws InvocationTargetException, IllegalAccessException {
+        Object isCorrectUsage = commandExecutor.invoke(commandClassInstance, args);
+        if (isCorrectUsage == null) return true;
+        return (Boolean) isCorrectUsage;
     }
 
     /**
      * Attempts to invoke the commandExecutor.
      *
      * @param args The arguments to call the method with.
-     * @return The methods return, or null if the method could not be invoked.
+     * @return True, if the command was used correctly, else false.
      */
-    Object tryInvoke(Object... args) {
+    boolean tryInvoke(Object... args) {
         Parameter[] parameters = commandExecutor.getParameters();
         int index = 0;
         for (Object argument : args) {
-            if (parameters[index].getAnnotation(Required.class) != null && argument == null) return null;
+            if (parameters[index].getAnnotation(Optional.class) == null && argument == null) return false;
             index++;
         }
         try {
-            return commandExecutor.invoke(commandClassInstance, args);
+            return invoke(args);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-            if (e.getClass() == InvocationTargetException.class) System.out.println(e.getCause().toString());
-            return null;
+            if (e.getClass() == InvocationTargetException.class) {
+                System.out.println(e.getCause().toString());
+                return true; // This is a programming error.
+            }
+            return false;
         }
     }
 
-    Boolean isAnnotationsValid() {
-        Boolean requiredParameterFound = false;
+    boolean isAnnotationsValid() {
+        Boolean optionalParameterFound = false;
         for (Parameter param : commandExecutor.getParameters()) {
-            if (param.getAnnotation(Required.class) == null && requiredParameterFound) {
+            if (param.getAnnotation(Optional.class) == null && optionalParameterFound) {
                 return false;
-            } else if (param.getAnnotation(Required.class) != null) requiredParameterFound = true;
+            } else if (param.getAnnotation(Optional.class) != null) optionalParameterFound = true;
         }
         return true;
     }

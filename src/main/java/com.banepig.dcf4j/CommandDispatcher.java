@@ -19,7 +19,7 @@ public class CommandDispatcher {
     private IDiscordClient client;
     private StringCaster stringCaster;
     private HashMap<String, ArrayList<CommandExecutor>> registeredCommands = new HashMap<>();
-
+    private String usageMessage = "Invalid usage! Usage: %USAGE%";
 
     /**
      * Initializes a CommandDispatcher object
@@ -29,6 +29,21 @@ public class CommandDispatcher {
     public CommandDispatcher(IDiscordClient client) {
         this.client = client;
         this.stringCaster = new StringCaster(client);
+
+        EventDispatcher dispatcher = client.getDispatcher();
+        dispatcher.registerListener(this);
+    }
+
+    /**
+     * Initializes a CommandDispatcher object
+     *
+     * @param client The client this object should use to listen for events.
+     */
+    public CommandDispatcher(IDiscordClient client, String usageMessage) {
+        this.client = client;
+        this.stringCaster = new StringCaster(client);
+
+        this.usageMessage = usageMessage;
 
         EventDispatcher dispatcher = client.getDispatcher();
         dispatcher.registerListener(this);
@@ -98,7 +113,10 @@ public class CommandDispatcher {
      */
     private void dispatchCommand(String label, String[] args, IMessage message) {
         List<CommandExecutor> commandExecutors = registeredCommands.get(label);
-        if (commandExecutors == null) return;
+        if (commandExecutors == null || commandExecutors.isEmpty()) return;
+
+        Boolean commandExecuted = false;
+
         invokeLoop:
         for (CommandExecutor commandExecutor : commandExecutors) {
             Class<?>[] commandExecutorParams = commandExecutor.getCommandExecutor().getParameterTypes();
@@ -112,7 +130,13 @@ public class CommandDispatcher {
                 index++;
             }
             for (int i = args.length + 1; i < castedArgs.length - args.length; i++) castedArgs[i] = null;
-            commandExecutor.tryInvoke(castedArgs);
+            boolean isCorrectUsage = commandExecutor.tryInvoke(castedArgs);
+            if (isCorrectUsage) commandExecuted = true;
+        }
+
+        if (!commandExecuted) {
+            Command command = commandExecutors.get(0).getAnnotation();
+            message.getChannel().sendMessage(usageMessage.replace("%USAGE%", command.usage()));
         }
     }
 }

@@ -7,7 +7,7 @@ import sx.blah.discord.util.DiscordException;
 
 public class Main {
     public static void main(String... args) {
-        IDiscordClient client = createClient("token", true);
+        IDiscordClient client = createClient("NDU3OTI4MTQ3MTc0OTQ4ODY0.DjlkoQ.D1XGxh1zqvHcgaBtlNGUaouPUgg", true);
         if (client == null) return;
         while (!client.isReady() || !client.isLoggedIn()) {
             try {
