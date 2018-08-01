@@ -60,7 +60,7 @@ public class CommandDispatcher {
             for (Method commandExecutorMethod : commandClass.getMethods()) {
                 Command annotation = commandExecutorMethod.getAnnotation(Command.class);
                 if (annotation == null) continue;
-                String label = annotation.label();
+                String label = annotation.label().toLowerCase();
                 CommandExecutor commandExecutor = new CommandExecutor(commandClassInstance, commandExecutorMethod);
                 registeredCommands.computeIfAbsent(label, k -> new ArrayList<>());
                 ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
@@ -104,7 +104,7 @@ public class CommandDispatcher {
     public void onMessageEvent(MessageReceivedEvent event) {
         List<String> args = Arrays.asList(event.getMessage().getContent().split(" "));
 
-        String label = args.get(0);
+        String label = args.get(0).toLowerCase();
         args = args.subList(1, args.size());
         dispatchCommand(label, args.toArray(new String[args.size()]), event.getMessage());
     }
