@@ -1,8 +1,11 @@
 package com.banepig.dcf4j.stringcaster;
 
+import org.javatuples.Pair;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
+
+import java.util.List;
 
 /**
  * Automatically casts strings into various other classes.

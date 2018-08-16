@@ -34,22 +34,6 @@ public class CommandDispatcher {
     }
 
     /**
-     * Initializes a CommandDispatcher object
-     *
-     * @param client The client this object should use to listen for events.
-     * @param usageMessage The custom invalid usage message which dcf4j will send to users if they use a command incorrectly.
-     */
-    public CommandDispatcher(IDiscordClient client, String usageMessage) {
-        this.client = client;
-        this.stringCaster = new StringCaster(client);
-
-        this.usageMessage = usageMessage;
-
-        EventDispatcher dispatcher = client.getDispatcher();
-        dispatcher.registerListener(this);
-    }
-
-    /**
      * Registers commands, and methods with the "Commands" annotation will attempt to be called.
      *
      * @param commands The commands to register.
@@ -63,7 +47,7 @@ public class CommandDispatcher {
                 String label = annotation.label().toLowerCase();
                 CommandExecutor commandExecutor = new CommandExecutor(commandClassInstance, commandExecutorMethod);
                 registeredCommands.computeIfAbsent(label, k -> new ArrayList<>());
-                ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label);
+                ArrayList<CommandExecutor> commandsWithLabel = registeredCommands.get(label.toLowerCase());
                 commandsWithLabel.add(commandExecutor);
                 if (!commandExecutor.isAnnotationsValid()) {
                     throw new IllegalAnnotationException();
@@ -114,6 +98,7 @@ public class CommandDispatcher {
      * @param args  The command arguments.
      */
     private void dispatchCommand(String label, String[] args, IMessage message) {
+        label = label.toLowerCase();
         List<CommandExecutor> commandExecutors = registeredCommands.get(label);
         if (commandExecutors == null || commandExecutors.isEmpty()) return;
 
