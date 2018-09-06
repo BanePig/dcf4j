@@ -41,14 +41,14 @@ class CommandDispatcher(val client: IDiscordClient) {
 
         var commandSuccessful = false
 
-        for (commandHandler in registeredCommands[label] ?: return) {
+        commandLoop@ for (commandHandler in registeredCommands[label] ?: return) {
             val commandMethod = commandHandler.method
             val parameterTypes = commandMethod.parameterTypes
             if (parameterTypes.isEmpty() || parameterTypes[0] != IMessage::class.java) throw Exception("Commands first parameter is not of IMessage type")
             val castedArgs = ArrayList<Any?>()
             castedArgs.add(event.message)
             for (arg in args.withIndex()) {
-                if (parameterTypes.size <= arg.index + 1) continue
+                if (parameterTypes.size <= arg.index + 1) continue@commandLoop
                 castedArgs.add(arg.value.to(parameterTypes[arg.index + 1], client))
             }
             val wasDispatched = CommandInvoker.tryDispatch(commandHandler, castedArgs)
