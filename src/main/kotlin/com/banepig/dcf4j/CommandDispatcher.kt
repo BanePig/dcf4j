@@ -48,7 +48,7 @@ class CommandDispatcher(val client: IDiscordClient) {
             val castedArgs = ArrayList<Any?>()
             castedArgs.add(event.message)
             for (arg in args.withIndex()) {
-                if (parameterTypes.size < arg.index + 1) return
+                if (parameterTypes.size <= arg.index + 1) continue
                 castedArgs.add(arg.value.to(parameterTypes[arg.index + 1], client))
             }
             val wasDispatched = CommandInvoker.tryDispatch(commandHandler, castedArgs)
