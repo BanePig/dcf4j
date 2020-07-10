@@ -1,6 +1,6 @@
 # DCF4J [![](https://jitpack.io/v/BanePig/dcf4j.svg)](https://jitpack.io/#BanePig/dcf4j)
 
-A java command framework for discord. This framework automatically checks syntax, and has many options for customization to write more with less.
+A kotlin command framework for discord. This framework automatically checks syntax, and has many options for customization to write more with less.
 
 ## Requirements
 
